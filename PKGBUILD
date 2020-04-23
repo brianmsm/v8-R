@@ -7,7 +7,7 @@
 # Contributor: David Flemström <david.flemstrom@gmail.com>
 
 pkgname=v8-r
-pkgver=8.4.118
+pkgver=8.4.166
 pkgrel=1
 pkgdesc="Google's open source JavaScript and WebAssembly engine"
 arch=('x86_64')
@@ -15,7 +15,7 @@ url="https://v8.dev"
 license=('BSD')
 depends=('icu')
 optional=('rlwrap')
-makedepends=('clang' 'clang-tools-extra' 'lld' 'llvm' 'python2' 'git' 'wget')
+makedepends=('clang' 'clang-tools-extra' 'lld' 'llvm' 'python3' 'git' 'wget')
 conflicts=('v8' 'v8-3.14' 'v8-3.15' 'v8-3.20' 'v8-static-gyp' 'v8-static-gyp-5.4')
 provides=('v8')
 source=("depot_tools::git+https://chromium.googlesource.com/chromium/tools/depot_tools.git"
@@ -24,14 +24,16 @@ source=("depot_tools::git+https://chromium.googlesource.com/chromium/tools/depot
         "v8_libplatform.pc"
         "d8"
         "gcc10.diff"
-        "unknown_option.diff")
+        "unknown_option.diff"
+        "gcc_solink.diff")
 sha256sums=('SKIP'
             '3616bcfb15af7cd5a39bc0f223b2a52f15883a4bc8cfcfb291837c7421363d75'
             'efb37bd706e6535abfa20c77bb16597253391619dae275627312d00ee7332fa3'
             'ae23d543f655b4d8449f98828d0aff6858a777429b9ebdd2e23541f89645d4eb'
             '6abb07ab1cf593067d19028f385bd7ee52196fc644e315c388f08294d82ceff0'
             'ec2c551cdfff1fd5ef72faac675eb687c69f81355fb7a03b333bdf5043fa3bc9'
-            '92bbb8acab3a5f9bdc5c3bd4d936a6a4a61f0c5b1195a6d71f7afc72cbd8b32e')
+            '47ae0a6dbb3d72910bc0e12364f32472f45027945462c9f79536b8fef472c813'
+            'c71e94d3aecfbcfc9a3d1c0e3467dc40e6650c73aecd08a4e34b47a2450ac1ec')
 
 OUTFLD=out.gn/Release
 
@@ -39,12 +41,6 @@ prepare() {
 
   export CC=/usr/bin/clang
   export CXX=/usr/bin/clang++
-
-  # Switching to python2 system environment
-  mkdir -p bin
-  ln -sf /usr/bin/python2 ./bin/python
-  ln -sf /usr/bin/python2-config ./bin/python-config
-  msg2 "Using: `which python`"
 
   export PATH=${srcdir}/bin:`pwd`/depot_tools:"$PATH"
   export GYP_GENERATORS=ninja
@@ -73,8 +69,9 @@ prepare() {
   $srcdir/v8/build/linux/unbundle/replace_gn_files.py --system-libraries icu
 
   msg2 "patch compiler options"
-  patch -p2 < ../unknown_option.diff
   patch -p2 < ../gcc10.diff
+  patch -p2 < ../unknown_option.diff
+  patch -p2 < ../gcc_solink.diff
 
   sed "s/@VERSION@/${pkgver}/g" -i "${srcdir}/v8.pc"
   sed "s/@VERSION@/${pkgver}/g" -i "${srcdir}/v8_libbase.pc"
@@ -150,13 +147,6 @@ package() {
 
   install -d ${pkgdir}/usr/share/licenses/v8
   install -m644 LICENSE* ${pkgdir}/usr/share/licenses/v8
-
-  cd $srcdir
-  if [ -d "bin" ]; then
-    msg2 "cleanup leftover python binaries"
-    rm -rf "bin"
-  fi
-
 }
 
 # vim:set ts=2 sw=2 et:

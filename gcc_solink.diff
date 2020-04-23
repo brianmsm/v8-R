@@ -1,0 +1,45 @@
+
+# Python3+ instead of python2.7 by Pavel Kabikov aka bitMan
+# https://forums.gentoo.org/viewtopic-t-1108872-start-0.html
+
+diff --git a/toolchain/gcc_solink_wrapper.py b/toolchain/gcc_solink_wrapper.py
+index 540b1eda3..48192a784 100755
+--- a/v8/build/toolchain/gcc_solink_wrapper.py
++++ b/v8/build/toolchain/gcc_solink_wrapper.py
+@@ -11,19 +11,26 @@ does not have a POSIX-like shell (e.g. Windows).
+ """
+ 
+ import argparse
++import io
+ import os
+ import subprocess
+ import sys
+ 
+ import wrapper_utils
+ 
++def read_as_utf8(fileno):
++    fp = io.open(fileno, mode="r", encoding="utf-8", closefd=False)
++    content = fp.read()
++    fp.close()
++    return content
++
+ 
+ def CollectSONAME(args):
+   """Replaces: readelf -d $sofile | grep SONAME"""
+   toc = ''
+   readelf = subprocess.Popen(wrapper_utils.CommandToRun(
+       [args.readelf, '-d', args.sofile]), stdout=subprocess.PIPE, bufsize=-1)
+-  for line in readelf.stdout:
++  for line in read_as_utf8(readelf.stdout.fileno()):
+     if 'SONAME' in line:
+       toc += line
+   return readelf.wait(), toc
+@@ -35,7 +42,7 @@ def CollectDynSym(args):
+   nm = subprocess.Popen(wrapper_utils.CommandToRun([
+       args.nm, '--format=posix', '-g', '-D', args.sofile]),
+                         stdout=subprocess.PIPE, bufsize=-1)
+-  for line in nm.stdout:
++  for line in read_as_utf8(nm.stdout.fileno()):
+     toc += ' '.join(line.split(' ', 2)[:2]) + '\n'
+   return nm.wait(), toc
+ 
