@@ -10,6 +10,6 @@ index 5fa34150a..f088bd55f 100644
 -          "-Wno-non-c-typedef-for-linkage",
 +          # # TODO(https://crbug.com/1050281): Clean up, enable.
 +          # "-Wno-non-c-typedef-for-linkage",
- 
-           # TODO(https://crbug.com/1059231): Clean up, enable.
-           "-Wno-pointer-to-int-cast",
+         ]
+
+         cflags_c += [

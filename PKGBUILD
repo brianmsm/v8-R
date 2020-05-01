@@ -7,7 +7,7 @@
 # Contributor: David Flemström <david.flemstrom@gmail.com>
 
 pkgname=v8-r
-pkgver=8.4.166
+pkgver=8.4.264
 pkgrel=1
 pkgdesc="Google's open source JavaScript and WebAssembly engine"
 arch=('x86_64')
@@ -32,8 +32,8 @@ sha256sums=('SKIP'
             'ae23d543f655b4d8449f98828d0aff6858a777429b9ebdd2e23541f89645d4eb'
             '6abb07ab1cf593067d19028f385bd7ee52196fc644e315c388f08294d82ceff0'
             'ec2c551cdfff1fd5ef72faac675eb687c69f81355fb7a03b333bdf5043fa3bc9'
-            '47ae0a6dbb3d72910bc0e12364f32472f45027945462c9f79536b8fef472c813'
-            'c71e94d3aecfbcfc9a3d1c0e3467dc40e6650c73aecd08a4e34b47a2450ac1ec')
+            '1ef7ffee22c2b9fa2c7e191386f193466ca183b098558660d203bdcc39e6f188'
+            '05277a65987d5f858643203dc0d4a0302bb6463cd758852ca5270aa4663ccb4d')
 
 OUTFLD=out.gn/Release
 
@@ -112,10 +112,10 @@ check() {
   cd $srcdir/v8
 
   msg2 "Testing, this will also take a while..."
-  tools/run-tests.py --no-presubmit \
-                     --outdir=out.gn \
-                     --arch="x64" \
-                     --mode=Release || true
+  python2 tools/run-tests.py --no-presubmit \
+                             --outdir=out.gn \
+                             --arch="x64" \
+                             --mode=Release || true
 }
 
 package() {

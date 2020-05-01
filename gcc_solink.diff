@@ -35,9 +35,9 @@ index 540b1eda3..48192a784 100755
        toc += line
    return readelf.wait(), toc
 @@ -35,7 +42,7 @@ def CollectDynSym(args):
-   nm = subprocess.Popen(wrapper_utils.CommandToRun([
-       args.nm, '--format=posix', '-g', '-D', args.sofile]),
-                         stdout=subprocess.PIPE, bufsize=-1)
+           [args.nm, '--format=posix', '-g', '-D', '-p', args.sofile]),
+       stdout=subprocess.PIPE,
+       bufsize=-1)
 -  for line in nm.stdout:
 +  for line in read_as_utf8(nm.stdout.fileno()):
      toc += ' '.join(line.split(' ', 2)[:2]) + '\n'
