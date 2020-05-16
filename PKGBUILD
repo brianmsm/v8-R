@@ -7,8 +7,8 @@
 # Contributor: David Flemström <david.flemstrom@gmail.com>
 
 pkgname=v8-r
-pkgver=8.4.320
-pkgrel=2
+pkgver=8.5.6
+pkgrel=1
 pkgdesc="Google's open source JavaScript and WebAssembly engine"
 arch=('x86_64')
 url="https://v8.dev"
@@ -135,6 +135,9 @@ package() {
 
   install -d ${pkgdir}/usr/include
   install -Dm644 include/*.h ${pkgdir}/usr/include
+
+  install -d ${pkgdir}/usr/include/cppgc
+  install -Dm644 include/cppgc/*.h ${pkgdir}/usr/include/cppgc
 
   install -d ${pkgdir}/usr/include/libplatform
   install -Dm644 include/libplatform/*.h ${pkgdir}/usr/include/libplatform
