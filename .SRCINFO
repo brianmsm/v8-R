@@ -1,12 +1,11 @@
 pkgbase = v8-r
 	pkgdesc = Google's open source JavaScript and WebAssembly engine
-	pkgver = 8.4.271
-	pkgrel = 1
+	pkgver = 8.4.320
+	pkgrel = 2
 	url = https://v8.dev
 	arch = x86_64
 	license = BSD
 	makedepends = clang
-	makedepends = clang-tools-extra
 	makedepends = lld
 	makedepends = llvm
 	makedepends = python3
